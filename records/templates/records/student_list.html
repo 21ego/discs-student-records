@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DISCS Student Records</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy:        #0f1f3d;
+            --navy-mid:    #1a3260;
+            --green:       #2e7d52;
+            --green-light: #e8f5ee;
+            --gold:        #c9a227;
+            --surface:     #f4f5f8;
+            --white:       #ffffff;
+            --border:      #dde1e9;
+            --text:        #1c2537;
+            --muted:       #6b7589;
+            --danger:      #c0392b;
+            --danger-bg:   #fdf0ef;
+            --radius:      8px;
+            --shadow:      0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.05);
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--text);
+            min-height: 100vh;
+            padding-bottom: 80px;
+            font-size: 16px;
+        }
+
+        /* ── Header ── */
+        header {
+            background: var(--navy);
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .header-brand { display: flex; align-items: center; gap: 14px; }
+        .header-logo-img {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+        }
+        .header-logo {
+            width: 36px; height: 36px;
+            background: var(--gold);
+            border-radius: 6px;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Serif Display', serif;
+            font-size: 17px; color: var(--navy); font-weight: bold;
+        }
+        .header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: #fff; }
+        .header-sub { font-size: 11px; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; }
+
+        /* ── Main ── */
+        main { max-width: 100%; margin: 0; padding: 36px 48px; }
+
+        .page-heading {
+            display: flex; align-items: flex-end; justify-content: space-between;
+            margin-bottom: 28px; gap: 16px; flex-wrap: wrap;
+        }
+        .page-heading h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 34px; color: var(--navy); line-height: 1.2;
+        }
+        .page-heading h1 span {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px; font-weight: 500;
+            color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px;
+        }
+
+        /* ── Toolbar ── */
+        .toolbar {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .search-wrap { flex: 1; min-width: 200px; position: relative; }
+        .search-wrap svg {
+            position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+            color: var(--muted); pointer-events: none;
+        }
+        .search-input {
+            width: 100%; height: 44px;
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 0 12px 0 38px;
+            font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--text);
+            background: var(--surface);
+            transition: border-color .15s, box-shadow .15s; outline: none;
+        }
+        .search-input:focus {
+            border-color: var(--navy-mid);
+            box-shadow: 0 0 0 3px rgba(26,50,96,.1);
+            background: var(--white);
+        }
+        .filter-form { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+        select.filter-select {
+            height: 44px; border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 0 10px; font-family: 'DM Sans', sans-serif; font-size: 15px;
+            color: var(--text); background: var(--surface);
+            cursor: pointer; outline: none; transition: border-color .15s;
+        }
+        select.filter-select:focus { border-color: var(--navy-mid); }
+
+        .btn {
+            display: inline-flex; align-items: center; gap: 6px;
+            height: 44px; padding: 0 18px;
+            border-radius: var(--radius);
+            font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+            cursor: pointer; text-decoration: none; border: none;
+            transition: background .15s, box-shadow .15s;
+            white-space: nowrap;
+        }
+        .btn-primary { background: var(--navy); color: #fff; }
+        .btn-primary:hover { background: var(--navy-mid); box-shadow: 0 2px 8px rgba(15,31,61,.3); }
+        .btn-success { background: var(--green); color: #fff; }
+        .btn-success:hover { background: #256644; box-shadow: 0 2px 8px rgba(46,125,82,.3); }
+
+        /* ── Table ── */
+        .table-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: var(--navy); }
+        thead th {
+            padding: 13px 16px;
+            font-size: 13px; font-weight: 600;
+            text-transform: uppercase; letter-spacing: .08em;
+            color: rgba(255,255,255,.65);
+            text-align: left; white-space: nowrap;
+        }
+        thead th a {
+            color: rgba(255,255,255,.8); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 4px;
+            transition: color .15s;
+        }
+        thead th a:hover { color: var(--gold); }
+        tbody tr { border-bottom: 1px solid var(--border); transition: background .1s; }
+        tbody tr:last-child { border-bottom: none; }
+        tbody tr:hover { background: #f8f9fb; }
+        tbody td { padding: 15px 18px; font-size: 16px; vertical-align: middle; }
+
+        .id-badge {
+            font-size: 14px; font-weight: 600;
+            color: var(--navy-mid); background: #edf0f7;
+            padding: 3px 8px; border-radius: 4px; letter-spacing: .04em;
+            font-variant-numeric: tabular-nums;
+        }
+        .qpi { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; }
+        .qpi-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .qpi-high .qpi-dot { background: #2e7d52; }
+        .qpi-mid  .qpi-dot { background: #c9a227; }
+        .qpi-low  .qpi-dot { background: #c0392b; }
+        .year-pill {
+            display: inline-block; width: 24px; height: 24px;
+            line-height: 24px; text-align: center;
+            border-radius: 50%; font-size: 12px; font-weight: 600;
+            background: #edf0f7; color: var(--navy);
+        }
+        .course-tag {
+            font-size: 14px; font-weight: 500; color: var(--navy-mid);
+            background: var(--green-light); border: 1px solid #b8dfc8;
+            padding: 4px 10px; border-radius: 4px;
+        }
+
+        .actions { display: flex; gap: 5px; flex-wrap: wrap; }
+        .btn-xs {
+            height: 32px; padding: 0 12px;
+            font-size: 13px; font-weight: 500; border-radius: 5px;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 4px;
+            transition: background .12s, border-color .12s;
+            border: 1px solid transparent; white-space: nowrap; cursor: pointer;
+        }
+        .btn-xs.edit   { color: var(--navy-mid); border-color: var(--border); background: var(--white); }
+        .btn-xs.edit:hover   { background: #edf0f7; border-color: #b0bbd0; }
+        .btn-xs.delete { color: var(--danger); border-color: #f0c4c0; background: var(--danger-bg); }
+        .btn-xs.delete:hover { background: #f9d9d6; }
+        .btn-xs.undo, .btn-xs.redo { color: #4a5568; border-color: var(--border); background: var(--white); }
+        .btn-xs.undo:hover, .btn-xs.redo:hover { background: #f0f2f5; }
+
+        .empty-state { text-align: center; padding: 60px 24px; color: var(--muted); }
+        .empty-state svg { margin-bottom: 12px; opacity: .3; }
+        .empty-state p { font-size: 14px; }
+
+        footer {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--white); border-top: 1px solid var(--border);
+            height: 44px; display: flex; align-items: center;
+            justify-content: space-between; padding: 0 40px; z-index: 50;
+        }
+        .footer-stat { font-size: 15px; color: var(--muted); }
+        .footer-stat strong { color: var(--text); font-weight: 600; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-brand">
+        {% load static %}
+        <img src="{% static 'records/ateneo_logo.png' %}" alt="Ateneo Logo" class="header-logo-img"
+             onerror="this.style.display='none'">
+        <div>
+            <div class="header-title">DISCS Student Records</div>
+            <div class="header-sub">Ateneo de Manila University · Management Information Systems</div>
+        </div>
+    </div>
+</header>
+
+<main>
+    <div class="page-heading">
+        <h1><span>Academic Year 2025–2026</span>Student Directory</h1>
+        <a href="{% url 'student_add' %}" class="btn btn-success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add New Student
+        </a>
+    </div>
+
+    <div class="toolbar">
+        <div class="search-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <form method="get" action="{% url 'student_list' %}">
+                <input type="text" name="q" class="search-input" placeholder="Search by name, ID, or course..." value="{{ request.GET.q|default:'' }}">
+            </form>
+        </div>
+
+        <form method="get" action="{% url 'student_list' %}" class="filter-form">
+            <select name="year" class="filter-select" onchange="this.form.submit()">
+                <option value="ALL">All Years</option>
+                <option value="1" {% if request.GET.year == '1' %}selected{% endif %}>Year 1</option>
+                <option value="2" {% if request.GET.year == '2' %}selected{% endif %}>Year 2</option>
+                <option value="3" {% if request.GET.year == '3' %}selected{% endif %}>Year 3</option>
+                <option value="4" {% if request.GET.year == '4' %}selected{% endif %}>Year 4</option>
+                <option value="5" {% if request.GET.year == '5' %}selected{% endif %}>Year 5</option>
+            </select>
+
+            <select name="course" class="filter-select" onchange="this.form.submit()">
+                <option value="ALL">All Courses</option>
+                {% for c in course_list %}
+                <option value="{{ c }}" {% if request.GET.course == c %}selected{% endif %}>{{ c }}</option>
+                {% endfor %}
+            </select>
+
+            {% if request.GET.q or request.GET.year or request.GET.course %}
+            <a href="{% url 'student_list' %}" class="btn" style="color: var(--muted); font-size: 13px;">Clear Filters</a>
+            {% endif %}
+        </form>
+    </div>
+
+    <div class="table-card">
+        <table>
+            <thead>
+                <tr>
+                    <th><a href="?sort=id&order={% if request.GET.sort == 'id' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}">ID {% if request.GET.sort == 'id' %}{% if request.GET.order == 'asc' %}↑{% else %}↓{% endif %}{% endif %}</a></th>
+                    <th><a href="?sort=name&order={% if request.GET.sort == 'name' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}">Student Name {% if request.GET.sort == 'name' %}{% if request.GET.order == 'asc' %}↑{% else %}↓{% endif %}{% endif %}</a></th>
+                    <th>Year</th>
+                    <th>Course</th>
+                    <th><a href="?sort=qpi&order={% if request.GET.sort == 'qpi' and request.GET.order == 'asc' %}desc{% else %}asc{% endif %}">QPI {% if request.GET.sort == 'qpi' %}{% if request.GET.order == 'asc' %}↑{% else %}↓{% endif %}{% endif %}</a></th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in students %}
+                <tr>
+                    <td><span class="id-badge">{{ s.id }}</span></td>
+                    <td style="font-weight: 600; color: var(--navy);">{{ s.name }}</td>
+                    <td><span class="year-pill">{{ s.year }}</span></td>
+                    <td><span class="course-tag">{{ s.course }}</span></td>
+                    <td>
+                        <div class="qpi {% if s.qpi >= 3.5 %}qpi-high{% elif s.qpi >= 2.0 %}qpi-mid{% else %}qpi-low{% endif %}">
+                            <div class="qpi-dot"></div>
+                            {{ s.qpi|stringformat:".2f" }}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="actions">
+                            <a href="{% url 'student_edit' s.id %}" class="btn-xs edit">Edit</a>
+                            <a href="{% url 'student_delete' s.id %}" class="btn-xs delete" onclick="return confirm('Are you sure you want to delete student {{ s.name }} (ID: {{ s.id }})?');">Delete</a>
+                            <a href="{% url 'student_undo' s.id %}" class="btn-xs undo" title="Undo last change">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+                            </a>
+                            <a href="{% url 'student_redo' s.id %}" class="btn-xs redo" title="Redo last change">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6">
+                        <div class="empty-state">
+                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" style="margin-bottom: 16px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                            <p>No student records found matching your criteria.</p>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-stat">Total Records: <strong>{{ record_count }}</strong></div>
+    <div class="footer-stat">DISCS Student Management System v2.0</div>
+</footer>
+
+</body>
+</html>

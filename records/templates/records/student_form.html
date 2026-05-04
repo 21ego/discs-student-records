@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if student %}Edit{% else %}Add{% endif %} Student — DISCS</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        :root {
+            --navy:     #0f1f3d;
+            --navy-mid: #1a3260;
+            --green:    #2e7d52;
+            --gold:     #c9a227;
+            --surface:  #f4f5f8;
+            --white:    #ffffff;
+            --border:   #dde1e9;
+            --text:     #1c2537;
+            --muted:    #6b7589;
+            --danger:   #c0392b;
+            --danger-bg:#fdf0ef;
+            --radius:   8px;
+            --shadow:   0 1px 3px rgba(0,0,0,.07), 0 4px 16px rgba(0,0,0,.07);
+        }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--surface);
+            color: var(--text);
+            min-height: 100vh;
+            font-size: 16px;
+        }
+
+        /* ── Header ── */
+        header {
+            background: var(--navy);
+            padding: 0 40px;
+            display: flex; align-items: center; gap: 14px;
+            height: 64px;
+            box-shadow: 0 2px 10px rgba(0,0,0,.3);
+        }
+        .header-logo-img {
+            width: 44px; height: 44px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--gold);
+        }
+        .header-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: #fff; }
+        .header-sub { font-size: 11px; color: rgba(255,255,255,.45); text-transform: uppercase; letter-spacing: .1em; font-weight: 500; }
+
+        /* ── Page body ── */
+        main {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 48px 24px 80px;
+        }
+
+        /* ── Back link ── */
+        .back-link {
+            display: inline-flex; align-items: center; gap: 6px;
+            color: var(--muted);
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 28px;
+            transition: color .15s;
+        }
+        .back-link:hover { color: var(--navy); }
+
+        /* ── Page heading ── */
+        .page-heading {
+            margin-bottom: 32px;
+        }
+        .page-heading h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 30px;
+            color: var(--navy);
+            line-height: 1.2;
+        }
+        .page-heading p {
+            margin-top: 6px;
+            font-size: 15px;
+            color: var(--muted);
+        }
+
+        /* ── Form card ── */
+        .form-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 36px 40px;
+        }
+
+        /* ── Field grid ── */
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px 28px;
+        }
+        .field-full { grid-column: 1 / -1; }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .field label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+        .required { color: var(--danger); }
+
+        .field input,
+        .field select {
+            height: 44px;
+            padding: 0 14px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 15px;
+            color: var(--text);
+            background: var(--white);
+            outline: none;
+            transition: border-color .15s, box-shadow .15s;
+            width: 100%;
+        }
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(15,31,61,.1);
+        }
+        .field input::placeholder { color: var(--border); }
+
+        .field-hint {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        /* Select wrapper */
+        .select-wrap {
+            position: relative;
+        }
+        .select-wrap select {
+            appearance: none;
+            padding-right: 36px;
+            cursor: pointer;
+        }
+        .select-wrap svg {
+            position: absolute;
+            right: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--muted);
+        }
+
+        /* ── Error alert ── */
+        .alert-error {
+            display: flex; align-items: flex-start; gap: 10px;
+            background: var(--danger-bg);
+            border: 1px solid rgba(192,57,43,.25);
+            border-radius: var(--radius);
+            padding: 12px 16px;
+            font-size: 14px;
+            color: var(--danger);
+            margin-bottom: 24px;
+        }
+
+        /* ── Divider ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin: 32px 0 24px;
+        }
+
+        /* ── Actions ── */
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+        .btn {
+            display: inline-flex; align-items: center; gap: 7px;
+            padding: 0 22px;
+            height: 42px;
+            border-radius: var(--radius);
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            text-decoration: none;
+            transition: all .15s;
+        }
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+        .btn-cancel:hover {
+            background: var(--surface);
+            color: var(--text);
+        }
+        .btn-save {
+            background: var(--green);
+            color: #fff;
+        }
+        .btn-save:hover {
+            background: #256644;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <img src="{% load static %}{% static 'records/ateneo_logo.png' %}" alt="Ateneo Logo" class="header-logo-img"
+         onerror="this.style.display='none'">
+    <div>
+        <div class="header-title">DISCS Student Records</div>
+        <div class="header-sub">Ateneo de Manila University · Management Information Systems</div>
+    </div>
+</header>
+
+<main>
+    <a href="{% url 'student_list' %}" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Back to Student Directory
+    </a>
+
+    <div class="page-heading">
+        <h1>{% if student %}Edit Student Record{% else %}Add New Student{% endif %}</h1>
+        <p>{% if student %}Update the student's information in the DISCS records system.{% else %}Register a new student in the DISCS academic records system.{% endif %}</p>
+    </div>
+
+    <div class="form-card">
+        {% if error %}
+        <div class="alert-error">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="field-grid">
+
+                <!-- ID -->
+                <div class="field">
+                    <label>Student ID <span class="required">*</span></label>
+                    <input type="text" name="id" value="{{ student.id|default:'' }}"
+                           placeholder="e.g. 231234" maxlength="6" required>
+                    <span class="field-hint">6 digits, prefix 21–25</span>
+                </div>
+
+                <!-- Year -->
+                <div class="field">
+                    <label>Year Level <span class="required">*</span></label>
+                    <input type="number" name="year" min="1" max="5"
+                           value="{{ student.year|default:'' }}" placeholder="1–5" required>
+                    <span class="field-hint">Must match ID prefix</span>
+                </div>
+
+                <!-- Name -->
+                <div class="field field-full">
+                    <label>Full Name <span class="required">*</span></label>
+                    <input type="text" name="name" value="{{ student.name|default:'' }}"
+                           placeholder="First and last name" required>
+                    <span class="field-hint">Letters and spaces only</span>
+                </div>
+
+                <!-- QPI -->
+                <div class="field">
+                    <label>QPI <span class="required">*</span></label>
+                    <input type="number" step="0.01" min="1.00" max="4.00"
+                           name="qpi" value="{{ student.qpi|default:'' }}"
+                           placeholder="1.00 – 4.00" required>
+                </div>
+
+                <!-- Course -->
+                <div class="field">
+                    <label>Course <span class="required">*</span></label>
+                    <div class="select-wrap">
+                        <select name="course" required>
+                            {% for c in course_list %}
+                            <option value="{{ c }}" {% if student.course == c %}selected{% endif %}>{{ c }}</option>
+                            {% endfor %}
+                        </select>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="form-actions">
+                <a href="{% url 'student_list' %}" class="btn btn-cancel">Cancel</a>
+                <button type="submit" class="btn btn-save">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    Save Record
+                </button>
+            </div>
+        </form>
+    </div>
+</main>
+
+</body>
+</html>
